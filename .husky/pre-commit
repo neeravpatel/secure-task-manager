@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "📝 Formatting uncommitted files..."
+npx nx format:write --uncommitted
+
+echo "🔍 Linting affected projects..."
+npx nx affected:lint --uncommitted --parallel

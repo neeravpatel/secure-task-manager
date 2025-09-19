@@ -9,7 +9,7 @@ describe('HealthCheckService', () => {
   beforeEach(async () => {
     dataSource = {
       query: jest.fn().mockResolvedValue([1]),
-    } as any;
+    } as unknown as DataSource;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [HealthCheckService, { provide: DataSource, useValue: dataSource }],

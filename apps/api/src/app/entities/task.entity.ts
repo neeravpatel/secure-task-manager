@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.entity";
-import { Organization } from "./organization.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.entity';
+import { Organization } from './organization.entity';
 
 @Entity()
 export class Task {
@@ -27,5 +27,4 @@ export class Task {
 
   @Column({ type: 'datetime', nullable: true })
   updatedAt: Date | null;
-
 }

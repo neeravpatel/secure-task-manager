@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../entities/user.entity';
-// import { Organization } from '../entities/organization.entity';
-// import { Role } from '../entities/role.entity';
-// import { Task } from '../entities/task.entity';
+import { Organization } from '../entities/organization.entity';
+import { Role } from '../entities/role.entity';
+import { Task } from '../entities/task.entity';
 
 @Module({
   imports: [
@@ -12,9 +12,10 @@ import { User } from '../entities/user.entity';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'sqlite',
-        database: config.get<string>('DATABASE_NAME'),
-        entities: [User],
-        synchronize: true,
+        database: config.get<string>('DATABASE_PATH'),
+        entities: [User, Organization, Role, Task],
+        synchronize: true, // Set to false in production
+        logging: true,
       }),
     }),
   ],

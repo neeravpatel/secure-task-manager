@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import  { DataSource } from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class HealthCheckService {
   constructor(private dataSource: DataSource) {}
 
-  async check(): Promise< {server: string; database: string; } > {
+  async check(): Promise<{ server: string; database: string }> {
     let dbStatus = 'OK';
     const serverStatus = 'OK';
 

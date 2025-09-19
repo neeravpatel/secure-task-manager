@@ -8,6 +8,11 @@
     "empty": "0.10.1"
   },
   "devDependencies": {
+    "@nx/angular": "^21.5.2",
+    "@nx/eslint": "^21.5.2",
+    "@nx/jest": "^21.5.2",
+    "@nx/nest": "^21.5.2",
+    "@nx/node": "^21.5.2",
     "@nx/workspace": "21.5.2",
     "nx": "21.5.2"
   }

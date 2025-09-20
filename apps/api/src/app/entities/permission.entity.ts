@@ -1,15 +1,22 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+/*
+  Permission
+    id: string (UUID)
+    name: string (e.g., 'create_task', 'edit_task', 'delete_task', 'view_audit_log')
+    description: string
+*/
+
 @Entity()
-export class Organization {
+export class Permission {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  name: string;
+  @Column({ unique: true })
+  name: string; // e.g., 'create_task', 'edit_task', 'delete_task', 'view_audit_log'
 
-  @Column({ nullable: true })
-  parentOrganizationId: string | null;
+  @Column()
+  description: string;
 
   @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date | null;

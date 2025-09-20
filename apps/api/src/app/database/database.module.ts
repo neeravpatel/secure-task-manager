@@ -5,6 +5,7 @@ import { User } from '../entities/user.entity';
 import { Organization } from '../entities/organization.entity';
 import { Role } from '../entities/role.entity';
 import { Task } from '../entities/task.entity';
+import { Permission } from '../entities/permission.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Task } from '../entities/task.entity';
       useFactory: (config: ConfigService) => ({
         type: 'sqlite',
         database: config.get<string>('DATABASE_PATH'),
-        entities: [User, Organization, Role, Task],
+        entities: [User, Organization, Role, Task, Permission],
         synchronize: true, // Set to false in production
         logging: true,
       }),

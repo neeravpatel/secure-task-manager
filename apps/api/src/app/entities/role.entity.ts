@@ -1,10 +1,36 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Permission } from './permission.entity';
+import { Organization } from './organization.entity';
 
-@Entity('roles')
+/*
+  Role is scoped to an Organization and has Permissions.
+
+  Role
+    id: string (UUID)
+    name: 'Owner' | 'Admin' | 'Viewer'
+    organizationId: string (FK)
+    permissions: Permission[] (array of Permission Ids)
+    createdAt: Date
+    updatedAt: Date
+*/
+
+@Entity()
 export class Role {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
-  name: string; // OWNER, ADMIN, USER
+  name: 'Owner' | 'Admin' | 'Viewer';
+
+  @ManyToOne(() => Organization)
+  organizationId: Organization['id'];
+
+  @ManyToOne(() => Permission)
+  permissionIds: [Permission['id']];
+
+  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date | null;
+
+  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: Date | null;
 }

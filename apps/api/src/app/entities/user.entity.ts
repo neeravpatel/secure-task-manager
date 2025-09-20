@@ -1,11 +1,11 @@
-import { Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Organization } from './organization.entity';
 import { Role } from './role.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ unique: true })
   email: string;
@@ -14,15 +14,14 @@ export class User {
   passwordHash: string;
 
   @ManyToOne(() => Organization)
-  organization: Organization;
+  organizationId: Organization['id'];
 
   @ManyToOne(() => Role)
-  @JoinTable()
-  role: Role[];
+  roleId: Role['id'];
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date | null;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date | null;
 }

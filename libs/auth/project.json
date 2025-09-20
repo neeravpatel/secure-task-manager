@@ -17,5 +17,6 @@
         "generatePackageJson": true
       }
     }
-  }
+  },
+  "importPath": "@secure-task-manager/auth"
 }

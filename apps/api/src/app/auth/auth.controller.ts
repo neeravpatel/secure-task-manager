@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { AuthResponseDto, LoginDto } from "@secure-task-manager/auth";
+import { Body, Controller, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { AuthResponseDto, LoginDto } from '@secure-task-manager/auth';
 
 @Controller('auth')
 export class AuthController {

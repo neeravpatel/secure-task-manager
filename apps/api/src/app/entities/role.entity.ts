@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Permission } from './permission.entity';
 import { Organization } from './organization.entity';
-import { RoleName } from './role.enum';
+import { RoleName } from '@secure-task-manager/data';
 
 @Entity()
 export class Role {

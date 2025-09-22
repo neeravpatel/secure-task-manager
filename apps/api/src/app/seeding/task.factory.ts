@@ -1,6 +1,6 @@
 import { setSeederFactory } from 'typeorm-extension';
 import { Task } from '../entities/task.entity';
-import { TaskStatus } from '../entities/task-status.enum';
+import { TaskStatus } from '@secure-task-manager/data';
 
 export const TaskFactory = setSeederFactory(Task, (faker) => {
   const task = new Task();

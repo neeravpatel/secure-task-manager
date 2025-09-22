@@ -11,7 +11,7 @@ import { RoleFactory } from './role.factory';
 import { UserFactory } from './user.factory';
 import { TaskFactory } from './task.factory';
 import { MainSeeder } from './main.seeder';
-import path from 'path';
+import * as path from 'path';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

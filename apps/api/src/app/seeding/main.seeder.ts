@@ -5,9 +5,8 @@ import { Role } from '../entities/role.entity';
 import { Organization } from '../entities/organization.entity';
 import { User } from '../entities/user.entity';
 import { Task } from '../entities/task.entity';
-import { RoleName } from '../entities/role.enum';
-import { PermissionName } from '../entities/permission.enum';
-import { TaskStatus } from '../entities/task-status.enum';
+import { RoleName, PermissionName, TaskStatus } from '@secure-task-manager/data';
+import * as bcrypt from 'bcrypt';
 
 export class MainSeeder implements Seeder {
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<any> {
@@ -97,32 +96,42 @@ export class MainSeeder implements Seeder {
     // -----------------------
     // 4. Users
     // -----------------------
+
+    const getPasswordHash = async (password: string): Promise<string> => {
+      return await bcrypt.hash(password, 10);
+    };
+
     const alice = await userFactory.save({
       email: 'alice@technova.com',
+      passwordHash: await getPasswordHash('alice12345'),
       organization: corp,
       role: ownerRole,
     });
 
     const bob = await userFactory.save({
       email: 'bob@rnd.technova.com',
+      passwordHash: await getPasswordHash('bob12345'),
       organization: rnd,
       role: adminRoleRND,
     });
 
     const carol = await userFactory.save({
       email: 'carol@hr.technova.com',
+      passwordHash: await getPasswordHash('carol12345'),
       organization: hr,
       role: adminRoleHR,
     });
 
     const dave = await userFactory.save({
       email: 'dave@rnd.technova.com',
+      passwordHash: await getPasswordHash('dave12345'),
       organization: rnd,
       role: viewerRoleRND,
     });
 
     const eve = await userFactory.save({
       email: 'eve@hr.technova.com',
+      passwordHash: await getPasswordHash('eve12345'),
       organization: hr,
       role: viewerRoleHR,
     });

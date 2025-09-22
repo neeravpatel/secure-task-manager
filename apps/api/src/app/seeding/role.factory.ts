@@ -1,7 +1,7 @@
 import { setSeederFactory } from 'typeorm-extension';
 import { Role } from '../entities/role.entity';
 import { Organization } from '../entities/organization.entity';
-import { RoleName } from '../entities/role.enum';
+import { RoleName } from '@secure-task-manager/data';
 
 export const RoleFactory = setSeederFactory(Role, (faker) => {
   const role = new Role();

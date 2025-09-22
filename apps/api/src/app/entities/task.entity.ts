@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Organization } from './organization.entity';
-import { TaskStatus } from './task-status.enum';
+import { TaskStatus } from '@secure-task-manager/data';
 
 @Entity()
 export class Task {

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Organization } from './organization.entity';
 import { Role } from './role.entity';
 
@@ -14,14 +14,27 @@ export class User {
   passwordHash: string;
 
   @ManyToOne(() => Organization)
-  organizationId: Organization['id'];
+  @JoinColumn({ name: 'organizationId' })
+  organization: Organization;
+
+  @Column()
+  organizationId: string;
 
   @ManyToOne(() => Role)
-  roleId: Role['id'];
+  @JoinColumn({ name: 'roleId' })
+  role: Role;
+
+  @Column()
+  roleId: string;
 
   @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date | null;
+  createdAt: Date;
 
-  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt: Date | null;
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 }

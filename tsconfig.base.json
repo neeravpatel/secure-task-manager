@@ -9,14 +9,14 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2015",
-    "module": "esnext",
+    "module": "commonjs",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@secure-task-manager/auth": ["@secure-task-manager/auth/src/index.ts"],
-      "@secure-task-manager/data": ["@secure-task-manager/data/src/index.ts"]
+      "@secure-task-manager/auth": ["libs/auth/src/index.ts"],
+      "@secure-task-manager/data": ["libs/data/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

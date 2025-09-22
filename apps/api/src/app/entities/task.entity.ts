@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Organization } from './organization.entity';
+import { TaskStatus } from './task-status.enum';
 
 @Entity()
 export class Task {
@@ -14,17 +15,30 @@ export class Task {
   description: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
+  @Column()
+  userId: string;
+
   @ManyToOne(() => Organization)
+  @JoinColumn({ name: 'organizationId' })
   organization: Organization;
 
   @Column()
-  status: string; // PENDING, IN_PROGRESS, COMPLETED
+  organizationId: string;
 
-  @Column({ type: 'datetime', nullable: true })
-  createdAt: Date | null;
+  @Column({ type: 'text' })
+  status: TaskStatus;
 
-  @Column({ type: 'datetime', nullable: true })
-  updatedAt: Date | null;
+  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 }

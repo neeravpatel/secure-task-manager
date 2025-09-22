@@ -1,36 +1,43 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToOne,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Permission } from './permission.entity';
 import { Organization } from './organization.entity';
-
-/*
-  Role is scoped to an Organization and has Permissions.
-
-  Role
-    id: string (UUID)
-    name: 'Owner' | 'Admin' | 'Viewer'
-    organizationId: string (FK)
-    permissions: Permission[] (array of Permission Ids)
-    createdAt: Date
-    updatedAt: Date
-*/
+import { RoleName } from './role.enum';
 
 @Entity()
 export class Role {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  name: 'Owner' | 'Admin' | 'Viewer';
+  @Column({ type: 'text' })
+  name: RoleName;
 
   @ManyToOne(() => Organization)
-  organizationId: Organization['id'];
+  @JoinColumn({ name: 'organizationId' })
+  organization: Organization;
 
-  @ManyToOne(() => Permission)
-  permissionIds: [Permission['id']];
+  @Column()
+  organizationId: string;
+
+  @ManyToMany(() => Permission)
+  @JoinTable({ name: 'role_permissions' })
+  permissions: Permission[];
 
   @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date | null;
+  createdAt: Date;
 
-  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt: Date | null;
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 }

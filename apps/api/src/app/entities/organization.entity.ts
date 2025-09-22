@@ -12,8 +12,13 @@ export class Organization {
   parentOrganizationId: string | null;
 
   @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date | null;
+  createdAt: Date;
 
-  @Column({ type: 'datetime', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt: Date | null;
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 }

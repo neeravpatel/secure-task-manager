@@ -15,11 +15,18 @@ export class Task {
   description: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  @JoinColumn({ name: 'createdUserId' })
+  createdUser: User;
 
   @Column()
-  userId: string;
+  createdUserId: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'assigneeUserId' })
+  assigneeUser: User;
+
+  @Column()
+  assigneeUserId: string;
 
   @ManyToOne(() => Organization)
   @JoinColumn({ name: 'organizationId' })

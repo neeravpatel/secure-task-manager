@@ -11,8 +11,12 @@ export class TaskController {
   @Post()
   @Roles(RoleName.ADMIN, RoleName.OWNER)
   @Permissions(PermissionName.CREATE_TASK)
-  createTask(@Body() dto: CreateTaskDto, @GetUser() user: User) {
-    return this.taskService.createTask(user, dto);
+  createTask(
+    @Body() dto: CreateTaskDto,
+    @GetUser() createdUser: User,
+    @GetUser() assigneeUser: User,
+  ) {
+    return this.taskService.createTask(createdUser, assigneeUser, dto);
   }
 
   @Get()

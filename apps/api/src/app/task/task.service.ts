@@ -40,14 +40,14 @@ export class TaskService {
     return organization;
   }
 
-  async createTask(user: User, dto: CreateTaskDto) {
-    const role = await this.getRoleById(user.roleId);
+  async createTask(createdUser: User, assigneeUser: User, dto: CreateTaskDto) {
+    const role = await this.getRoleById(createdUser.roleId);
 
     if (![RoleName.ADMIN, RoleName.OWNER].includes(role.name)) {
       throw new NotFoundException('Insufficient permissions to create tasks.');
     }
 
-    const organization = await this.getOrganizationById(user.organizationId);
+    const organization = await this.getOrganizationById(createdUser.organizationId);
 
     if (!organization) {
       throw new NotFoundException('Organization not found');
@@ -55,7 +55,8 @@ export class TaskService {
 
     const task = this.taskRepository.create({
       ...dto,
-      user,
+      createdUser: createdUser,
+      assigneeUser: assigneeUser,
       organization,
       status: TaskStatus.PENDING,
       createdAt: new Date(),
@@ -66,29 +67,17 @@ export class TaskService {
 
   async getTasksByUser(user: User) {
     const role = await this.getRoleById(user.roleId);
-    console.log(
-      '[getTasksByUser] user:',
-      user.email,
-      '| userId:',
-      user.id,
-      '| orgId:',
-      user.organizationId,
-      '| role:',
-      role.name,
-    );
 
     if ([RoleName.ADMIN, RoleName.OWNER].includes(role.name)) {
-      console.log('[getTasksByUser] Returning all tasks for org:', user.organizationId);
       return this.taskRepository.find({
-        where: { organization: { id: user.organizationId } },
-        relations: ['user', 'organization'],
+        where: { organizationId: user.organizationId },
+        relations: ['assigneeUser', 'createdUser', 'organization'],
         order: { createdAt: 'DESC' },
       });
     } else {
-      console.log('[getTasksByUser] Returning only tasks for user:', user.id);
       return this.taskRepository.find({
-        where: { user: { id: user.id } },
-        relations: ['user', 'organization'],
+        where: { assigneeUserId: user.id },
+        relations: ['assigneeUser', 'createdUser', 'organization'],
         order: { createdAt: 'DESC' },
       });
     }
@@ -102,7 +91,7 @@ export class TaskService {
       relations: ['user', 'organization'],
     });
 
-    if (task.userId !== user.id && ![RoleName.ADMIN, RoleName.OWNER].includes(role.name)) {
+    if (task.createdUserId !== user.id && ![RoleName.ADMIN, RoleName.OWNER].includes(role.name)) {
       throw new NotFoundException('Insufficient permissions to update tasks.');
     }
 
@@ -122,7 +111,7 @@ export class TaskService {
       relations: ['user', 'organization'],
     });
 
-    if (task.userId !== user.id && ![RoleName.ADMIN, RoleName.OWNER].includes(role.name)) {
+    if (task.createdUserId !== user.id && ![RoleName.ADMIN, RoleName.OWNER].includes(role.name)) {
       throw new NotFoundException('Insufficient permissions to delete tasks.');
     }
 

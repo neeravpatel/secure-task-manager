@@ -142,7 +142,8 @@ export class MainSeeder implements Seeder {
     await taskFactory.save({
       title: 'Review system audit logs',
       description: 'Ensure RBAC audit logs are complete.',
-      user: alice,
+      createdUser: alice,
+      assigneeUser: bob,
       organization: corp,
       status: TaskStatus.COMPLETED,
     });
@@ -150,7 +151,8 @@ export class MainSeeder implements Seeder {
     await taskFactory.save({
       title: 'Plan cloud migration',
       description: 'Prepare roadmap for Kubernetes migration.',
-      user: alice,
+      createdUser: alice,
+      assigneeUser: carol,
       organization: corp,
       status: TaskStatus.IN_PROGRESS,
     });
@@ -158,7 +160,8 @@ export class MainSeeder implements Seeder {
     await taskFactory.save({
       title: 'Implement Angular JWT login',
       description: 'Use NgRx for state management.',
-      user: bob,
+      createdUser: bob,
+      assigneeUser: dave,
       organization: rnd,
       status: TaskStatus.PENDING,
     });
@@ -166,7 +169,8 @@ export class MainSeeder implements Seeder {
     await taskFactory.save({
       title: 'Add RBAC guards to Fastify API',
       description: 'Decorators and permissions check.',
-      user: dave,
+      createdUser: bob,
+      assigneeUser: bob,
       organization: rnd,
       status: TaskStatus.IN_PROGRESS,
     });
@@ -174,7 +178,8 @@ export class MainSeeder implements Seeder {
     await taskFactory.save({
       title: 'Prepare HR security onboarding',
       description: 'Guide for new hires on security best practices.',
-      user: carol,
+      createdUser: carol,
+      assigneeUser: carol,
       organization: hr,
       status: TaskStatus.PENDING,
     });
@@ -182,7 +187,8 @@ export class MainSeeder implements Seeder {
     await taskFactory.save({
       title: 'Audit HR access logs',
       description: 'Review employee access and permissions.',
-      user: eve,
+      createdUser: carol,
+      assigneeUser: eve,
       organization: hr,
       status: TaskStatus.COMPLETED,
     });

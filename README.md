@@ -6,90 +6,188 @@
 
 Run `npx nx graph` to visually explore what got created. Now, let's get you up to speed!
 
-## Run tasks
+# Secure Task Manager
 
-To run tasks with Nx use:
+A secure, role-based task management system built with Nx monorepo, NestJS backend, and a modular architecture.
 
-```sh
-npx nx <target> <project-name>
+---
+
+## Setup Instructions
+
+### Backend
+
+1. **Install dependencies:**
+
+   ```sh
+   npm install
+   ```
+
+2. **Configure environment:**
+   - Copy `.env.example` to `.env` and set your environment variables (e.g., database path, JWT secret, port).
+
+3. **Database setup:**
+   - The backend uses SQLite by default. No manual setup is needed for dev.
+   - To seed the database with sample data:
+     ```sh
+     npm run seed
+     ```
+
+4. **Run the API server:**
+   ```sh
+   npx nx serve api
+   ```
+   The API will be available at `http://localhost:3000`.
+
+### Frontend
+
+> **Note:** If you have a frontend app, add setup instructions here.  
+> _Example:_
+>
+> ```sh
+> npx nx serve web
+> # or
+> cd apps/web && npm start
+> ```
+
+---
+
+## Architecture Overview
+
+This project uses an Nx monorepo structure:
+
+```
+secure-task-manager/
+├── apps/
+│   ├── api/         # NestJS backend application
+│   └── api-e2e/     # End-to-end tests for the API
+├── libs/
+│   ├── auth/        # Shared authentication logic (decorators, guards, DTOs)
+│   └── data/        # Shared data models, enums, and interfaces
+├── node_modules/
+├── package.json
+├── nx.json
+└── ...
 ```
 
-For example:
+- **apps/api**: Main backend app (NestJS, TypeORM, RBAC, REST API)
+- **libs/auth**: Guards, decorators, and DTOs for authentication/authorization
+- **libs/data**: TypeScript interfaces, enums, and DTOs shared across backend and frontend
 
-```sh
-npx nx build myproject
+---
+
+## Access Control Design & Data Models
+
+### Access Control
+
+- **Role-based access control (RBAC)** is enforced using NestJS guards and decorators.
+- **Roles:** `OWNER`, `ADMIN`, `VIEWER`
+- **Permissions:** Fine-grained, e.g., `CREATE_TASK`, `EDIT_TASK`, `VIEW_TASK`, etc.
+- **Scoping:**
+  - Owners/Admins can see and manage all tasks in their organization.
+  - Viewers can only see their own tasks.
+
+### Data Models
+
+- **User**
+  - `id`, `email`, `passwordHash`, `organizationId`, `roleId`, `createdAt`, `updatedAt`
+- **Organization**
+  - `id`, `name`, `parentOrganizationId`, `createdAt`, `updatedAt`
+- **Role**
+  - `id`, `name`, `organizationId`, `permissions`, `createdAt`, `updatedAt`
+- **Task**
+  - `id`, `title`, `description`, `userId`, `organizationId`, `status`, `createdAt`, `updatedAt`
+- **Permission**
+  - `id`, `name`, `description`
+
+---
+
+## Sample API Requests/Responses
+
+### Login
+
+**Request:**
+
+```http
+POST /auth/login
+Content-Type: application/json
+
+{
+	"email": "alice@technova.com",
+	"password": "alice12345"
+}
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+**Response:**
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
+```json
+{
+  "access_token": "JWT_TOKEN",
+  "user": {
+    "id": "user-uuid",
+    "email": "alice@technova.com",
+    "organizationId": "org-uuid",
+    "roleId": "role-uuid"
+  }
+}
 ```
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+### Get Tasks (as Admin/Owner)
 
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
+**Request:**
 
-# Generate a library
-npx nx g @nx/react:lib some-lib
+```http
+GET /tasks
+Authorization: Bearer JWT_TOKEN
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+**Response:**
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+```json
+[
+	{
+		"id": "task-uuid",
+		"title": "Prepare HR security onboarding",
+		"description": "Guide for new hires on security best practices.",
+		"userId": "carol-uuid",
+		"organizationId": "hr-uuid",
+		"status": "PENDING",
+		"createdAt": "...",
+		"updatedAt": "..."
+	},
+	...
+]
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+### Get Tasks (as Viewer)
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Request:**
 
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+```http
+GET /tasks
+Authorization: Bearer JWT_TOKEN
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Response:**  
+Returns only tasks assigned to the authenticated user.
 
-## Install Nx Console
+---
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+## Potential Future Enhancements
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Security:**
+  - Add 2FA/MFA for user accounts
+  - Rate limiting and brute-force protection
+  - Audit logging for sensitive actions
+- **Scalability:**
+  - Support for PostgreSQL or other RDBMS
+  - Horizontal scaling with stateless JWT auth
+  - Caching for frequent queries
+- **Features:**
+  - Task comments, attachments, and notifications
+  - Organization hierarchy and cross-org permissions
+  - Admin UI for managing users, roles, and permissions
+- **DevOps:**
+  - Dockerization and CI/CD pipelines
+  - Automated database migrations
 
-## Useful links
-
-Learn more:
-
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
